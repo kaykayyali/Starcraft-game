@@ -15,9 +15,9 @@ class MatchesController < ApplicationController
     win_percentage = playerPercentageMaker(player.id, matches)
     loss_percentage = (100.0 - win_percentage).to_s + "%"
     win_percentage = win_percentage.to_s + "%"
-    terrans_results = makeResults("terrans", matches)
-    protoss_results = makeResults("protoss", matches)
-    zerg_results = makeResults("zerg", matches)
+    terrans_results = makeResults("terrans",player.id, matches)
+    protoss_results = makeResults("protoss",player.id, matches)
+    zerg_results = makeResults("zerg",player.id, matches)
     render :json =>{
     	:factions => {
     			:terrans => terrans_results,
@@ -62,15 +62,15 @@ class MatchesController < ApplicationController
 		return percentage.to_s + "%"
 	end
 
-	def makeResults(faction, matches_array)
+	def makeResults(faction,player_id, matches_array)
 
 		wins = 0
 		losses = 0
 
 		matches_array.each do |match|
-			if match.winner_faction == faction
+			if match.winner_faction == faction && match.winner_id == player_id
 				wins = wins + 1
-			else
+			elsif match.loser_faction == faction && match.loser_id == player_id
 				losses = losses + 1
 			end
 		end
